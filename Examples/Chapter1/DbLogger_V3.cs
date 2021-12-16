@@ -15,6 +15,7 @@ namespace Examples.Chapter1
       {
         return Using(new SqlConnection(connectionString), conn => {conn.Open(); return f(conn);});
       }
+      
       public void Log(LogMessage msg)
       {
          Connect(connString, p => p.Execute("sp_create_log", msg, commandType: CommandType.StoredProcedure));

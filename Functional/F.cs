@@ -5,7 +5,7 @@ namespace Functional
     {
       public static R Using<T,R>(T disposable, Func<T, R> f) where T : IDisposable
       {
-        using(disposable) return f(disposable);
+        using(dis = disposable) return f(dis);
       }        
     }
 }
