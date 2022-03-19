@@ -1,16 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
 using Option;
+using Plato.Functional;
 using static Plato.Functional.F;
+using Pet = System.String;
+
 namespace Playground
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Enum.Parse("Monday"));
-            
+            var neighbors = new Neighbor[]
+            {
+               new (Name: "John", Pets: new Pet[] {"Fluffy", "Thor"}),
+               new (Name: "Tim",  Pets: new Pet[] {}),
+               new (Name: "Carl", Pets: new Pet[] {"Sybil"}),
+            };
+
+         IEnumerable<IEnumerable<Pet>> nested = neighbors.Map(n => n.Pets);
+         IEnumerable<Pet> flat = neighbors.Bind(n => n.Pets);
+            //foreach(T t in enumrable) foreach(R r in f(t)) yield return r;
+
+
+            IEnumerable<IEnumerable<Pet>> pets = neighbors.Map(n => n.Pets);
+            IEnumerable<Pet>  c = neighbors.Bind(x => x.Pets);
+        }
+        record Neighbor(string Name, IEnumerable<Pet> Pets);
+
+        public static string Prompt(string message) 
+        {
+            Console.WriteLine(message);
+            return Console.ReadLine();
             
         }
+        public static Option<Age> ReadAge(int retries) =>  
+        retries <= 0 ? None :
+        Age.ParseAge(Prompt("Please enter your age")).Match(None: () => ReadAge(--retries), Some: (age) => age);
     }
     public enum DayOfWeek
     {
@@ -22,6 +48,20 @@ namespace Playground
         Saturday,
         Sunday
     }
+
+    public struct Age
+   {
+        public static Func<string, Option<Age>> ParseAge = (val) => IntParser.ParseInt(val).Bind(val => Create(val));
+        public int Value { get; }
+        public static Option<Age> Create(int age) => IsValid(age) ? Some(new Age(age)) : None;      
+        private Age(int value) => Value = value;
+        private static bool IsValid(int age) => 0 <= age && age < 120;
+        public static bool operator <(Age l, Age r) => l.Value < r.Value;
+        public static bool operator >(Age l, Age r) => l.Value > r.Value;
+        public static bool operator <(Age l, int r) => l < new Age(r);
+        public static bool operator >(Age l, int r) => l > new Age(r); 
+        public override string ToString() => Value.ToString();
+   }
     public static class Greeter 
     {
         public static string Greet(Option<string> greetee)
