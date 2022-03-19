@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Option;
+using Plato.Functional;
 
 namespace Plato.Playground
 {
@@ -7,23 +11,34 @@ namespace Plato.Playground
         public static void _main()
         {
 
-        }
-        
+        } 
+        static Option<WorkPermit> GetWorkPermit(Dictionary<string, Employee> employees, string employeeId)
+         => employees.LookUp(employeeId).Bind(emp => emp.WorkPermit);
+        public static double AverageYearsWorkedAtTheCompany(List<Employee> employees)
+        => employees
+           .Bind(emp => emp.LeftOn.Map(leftOn => YearsBetween(emp.JoinedOn, leftOn)))
+           .Average();
+        static double YearsBetween(DateTime start, DateTime end)
+         => (end - start).Days / 365d;
     }
-    internal struct NoneType {}
-    internal record None<T> : Option<T> {}
-    internal abstract record Option<T>
-    {
-        public static implicit operator Option<T>(NoneType _) => new None<T>();
-        public static implicit operator Option<T>(T value) => value is null ? new None<T>() : new Some<T>(value);
-    }
-    internal record Some<T> : Option<T>
-    {
-    private T Value { get; }
-    public Some(T value)
-        => Value = value ?? throw new ArgumentNullException();
-    
-    public void Deconstruct(out T value)
-        => value = Value;
-    }
+   internal record WorkPermit
+   (
+      string Number,
+      DateTime Expiry
+   );
+   internal record Employee
+   (
+      string Id,
+      Option<WorkPermit> WorkPermit,
+      DateTime JoinedOn,
+      Option<DateTime> LeftOn
+   );
+
+
+
+
+
+
+
+
 }
