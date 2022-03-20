@@ -19,7 +19,9 @@ namespace Option
     public struct Option<T> 
     {
         public readonly bool isSome;
+
         public readonly T value;
+        
         internal Option(T value)
         {
             if(value == null)
@@ -48,7 +50,7 @@ namespace Option
         public static IEnumerable<R> Bind<T,R>(this Option<T> opt, Func<T, IEnumerable<R>> f) => opt.AsIEnumerable().Bind(f);
 
         public static Option<R> Map<T,R>(this Option<T> opt, Func<T,R> f) => opt.Bind(x => Some(f(x)));
-        
+
         public static IEnumerable<T> AsIEnumerable<T>(this Option<T> opt)
         {
             if(opt.isSome) yield return opt.value;
