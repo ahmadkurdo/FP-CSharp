@@ -13,13 +13,16 @@ namespace Plato.Playground
 
         } 
         static Option<WorkPermit> GetWorkPermit(Dictionary<string, Employee> employees, string employeeId)
-         => employees.LookUp(employeeId).Bind(emp => emp.WorkPermit);
+        => employees.LookUp(employeeId).Bind(emp => emp.WorkPermit);
+
         public static double AverageYearsWorkedAtTheCompany(List<Employee> employees)
         => employees
            .Bind(emp => emp.LeftOn.Map(leftOn => YearsBetween(emp.JoinedOn, leftOn)))
            .Average();
+
         static double YearsBetween(DateTime start, DateTime end)
-         => (end - start).Days / 365d;
+        => (end - start).Days / 365d;
+        
     }
    internal record WorkPermit
    (
@@ -33,12 +36,4 @@ namespace Plato.Playground
       DateTime JoinedOn,
       Option<DateTime> LeftOn
    );
-
-
-
-
-
-
-
-
 }

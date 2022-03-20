@@ -14,6 +14,7 @@ namespace Plato.Functional
             foreach(KeyValuePair<K,A> pair in dict) res[pair.Key] = f(pair.Value);
             return res;
         }
+        
         public static Option<A> LookUp<K,A>(this Dictionary<K,A> dict, K key) => dict.TryGetValue(key, out A a) ? Some(a) : None;
     }
 }
