@@ -6,9 +6,11 @@ using Unit = System.ValueTuple;
 namespace Option
 {
     public struct NoneType {}
+    
     public struct Some<T>
     {
         internal T Value {get;}
+
         internal Some(T value)
         {
             if(value == null)
@@ -16,12 +18,13 @@ namespace Option
             Value = value;
         }
     }
+
     public struct Option<T> 
     {
         public readonly bool isSome;
 
         public readonly T value;
-        
+
         internal Option(T value)
         {
             if(value == null)
